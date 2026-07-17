@@ -209,26 +209,77 @@
 
     </div>
 
+    <!-- Trigger Button for Page 2 -->
+    <button id="page2Btn" class="page2-btn" onclick="openPage2()">Open Page 2 ❤️</button>
+
+    <!-- Page 2 Content Container -->
+    <div id="apologyPage" class="apology-container">
+        <h2>I'm Sorry, Hana</h2>
+        <p>
+            Hey Hana, 
+            
+            Write your sincere apology letter right here. 
+            Take your time to express how you feel, own up to what happened, and let her know how much she matters to you. 
+            
+            You can type as much text as you want, use normal line breaks, and the letter container will neatly scroll to display it all.
+        </p>
+    </div>
+
     <script>
+        // --- TRACKING FLIPS FOR PAGE 2 REVEAL ---
         let musicStarted = false;
+        const flippedCards = new Set();
 
         function flipCard(container) {
             container.classList.toggle('flipped');
             
-            // Triggers the background music seamlessly on her very first tap
+            if (container.classList.contains('flipped')) {
+                flippedCards.add(container);
+            } else {
+                flippedCards.delete(container);
+            }
+
+            if (flippedCards.size === 4) {
+                document.getElementById('page2Btn').style.display = "block";
+            } else {
+                document.getElementById('page2Btn').style.display = "none";
+            }
+            
+            // Audio Trigger
             if (!musicStarted) {
                 const music = document.getElementById('bg-music');
-                music.volume = 0.4; // Sets a perfect gentle background volume
-                
+                music.volume = 0.4; 
                 var playPromise = music.play();
                 if (playPromise !== undefined) {
-                    playPromise.then(_ => {
-                        musicStarted = true;
-                    }).catch(error => {
-                        console.log("Browser playback interaction safeguard triggered: ", error);
-                    });
+                    playPromise.then(_ => { musicStarted = true; }).catch(err => console.log(err));
                 }
             }
+        }
+
+        // --- PAGE 2 TRANSITION ---
+        function openPage2() {
+            const grid = document.getElementById('nameGrid');
+            const btn = document.getElementById('page2Btn');
+            const title = document.getElementById('main-title');
+            const instruction = document.getElementById('main-instruction');
+            const apology = document.getElementById('apologyPage');
+
+            grid.style.opacity = "0";
+            grid.style.transform = "scale(0.9)";
+            btn.style.display = "none";
+            instruction.style.opacity = "0";
+
+            setTimeout(() => {
+                grid.style.display = "none";
+                instruction.style.display = "none";
+                title.innerText = "A Letter For You";
+
+                apology.style.display = "block";
+                setTimeout(() => {
+                    apology.style.opacity = "1";
+                    apology.style.transform = "translateY(0)";
+                }, 50);
+            }, 500);
         }
     </script>
 </body>
